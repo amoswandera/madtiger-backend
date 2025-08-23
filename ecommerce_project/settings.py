@@ -85,6 +85,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # This list will need your live frontend URL later
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://madtiger-frontend.vercel.app",
 ]
 
 REST_FRAMEWORK = {
