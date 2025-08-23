@@ -1,0 +1,20 @@
+# .gitignore file
+
+# Environment variables
+.env
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Virtual environment folder
+venv/
+
+# Local database file (if you ever use it again)
+db.sqlite3
+
+# Static files collected for production
+staticfiles/
+
+# Media files uploaded by users
+media/

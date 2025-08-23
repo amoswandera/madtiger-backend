@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Madtiger Clothings</title>
+    <style>
+        body { font-family: sans-serif; }
+        h1 { text-align: center; }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Our Products</h1>
+
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <a href="#"> <!-- We will add product detail links later -->
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <h3>{{ product.name }}</h3>
+                    <p>${{ product.price }}</p>
+                </a>
+            </div>
+        {% empty %}
+            <p>There are no products available at this time.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
