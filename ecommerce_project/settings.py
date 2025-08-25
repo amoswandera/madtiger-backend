@@ -1,3 +1,5 @@
+# settings.py (Final Corrected Version for Static Files)
+
 from pathlib import Path
 import os
 import dj_database_url
@@ -5,11 +7,9 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- All secrets are now read from the .env file ---
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = False # Correct for production
+DEBUG = False
 ALLOWED_HOSTS = ['madtiger-backend.onrender.com']
-
 CSRF_TRUSTED_ORIGINS = ['https://madtiger-backend.onrender.com']
 
 INSTALLED_APPS = [
@@ -24,14 +24,14 @@ INSTALLED_APPS = [
     'website',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders', # Added corsheaders back
+    'corsheaders',
     'django_filters',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # This is all we need from WhiteNoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,7 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce_project.wsgi.application'
 
-# --- Database configuration is now read from the .env file ---
 DATABASES = {
     'default': dj_database_url.parse(config('DATABASE_URL'))
 }
@@ -78,11 +77,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# --- THE PROBLEM LINE HAS BEEN REMOVED ---
+# STATICFILES_STORAGE is no longer needed. The middleware handles everything.
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# This list will need your live frontend URL later
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://madtiger-frontend.vercel.app",
@@ -102,12 +102,10 @@ REST_FRAMEWORK = {
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
-# --- CLOUDINARY CONFIGURATION ---
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': config('CLOUDINARY_API_KEY'),
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 
-# Tell Django to use Cloudinary for media files
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
