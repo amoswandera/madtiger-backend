@@ -1,3 +1,5 @@
+# settings.py (Final, Definitive Version for Static Files)
+
 from pathlib import Path
 import os
 import dj_database_url
@@ -77,8 +79,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # --- THIS IS THE FINAL, CORRECTED LINE ---
-# This setting is required by the cloudinary_storage app and resolves the conflict.
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# This is the recommended storage backend for WhiteNoise and resolves the issue.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
