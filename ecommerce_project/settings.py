@@ -8,7 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --- All secrets are now read from the .env file ---
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = False # Correct for production
-ALLOWED_HOSTS = ['*'] # This is fine for Render deployment
+ALLOWED_HOSTS = ['madtiger-backend.onrender.com']
+
+CSRF_TRUSTED_ORIGINS = ['https://madtiger-backend.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
