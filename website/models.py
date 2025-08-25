@@ -1,13 +1,12 @@
 # website/models.py
 
 from django.db import models
-from django.contrib.auth.models import User # We'll need this for the Order model
+from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
-# Model for Product Categories
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
-    slug = models.SlugField(max_length=200, unique=True) # A slug is a URL-friendly version of the name
-
+    slug = models.SlugField(max_length=200, unique=True)
     class Meta:
         ordering = ('name',)
         verbose_name = 'category'
@@ -21,7 +20,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True) # You'll need to install Pillow for this
+    image = CloudinaryField('image', blank=True, null=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available = models.BooleanField(default=True)
