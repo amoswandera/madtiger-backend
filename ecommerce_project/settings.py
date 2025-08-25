@@ -1,5 +1,3 @@
-# settings.py (Final Corrected Version for Static Files)
-
 from pathlib import Path
 import os
 import dj_database_url
@@ -31,7 +29,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # This is all we need from WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,8 +76,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# --- THE PROBLEM LINE HAS BEEN REMOVED ---
-# STATICFILES_STORAGE is no longer needed. The middleware handles everything.
+# --- THIS IS THE FINAL, CORRECTED LINE ---
+# This setting is required by the cloudinary_storage app and resolves the conflict.
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
