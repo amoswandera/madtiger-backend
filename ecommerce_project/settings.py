@@ -78,8 +78,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# --- THIS IS THE FINAL, CORRECTED LINE ---
-# This is the recommended storage backend for WhiteNoise and resolves the issue.
+WHITENOISE_USE_FINDERS = True
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

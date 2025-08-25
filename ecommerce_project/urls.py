@@ -9,7 +9,7 @@ from website.views import (
     ProductDetailAPIView, 
     CategoryListAPIView, 
     RegisterView, 
-    CustomAuthToken, 
+    CustomAuthToken,
     OrderCreateAPIView, 
     OrderListAPIView,
     OrderCancelAPIView,
