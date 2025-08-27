@@ -8,25 +8,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 
-# --- THIS IS THE CRITICAL FIX FOR DEPLOYMENT ---
-# Explicitly list the only domains that can access this server.
 ALLOWED_HOSTS = [
     'madtiger-backend.onrender.com',
 ]
 
-# This tells Django which frontend domains can safely make requests that change data (e.g., POST).
 CSRF_TRUSTED_ORIGINS = [
     'https://madtiger-backend.onrender.com',
-    'https://madtiger-frontend.vercel.app', # This must be your live Vercel URL
+    'https://madtiger-frontend.vercel.app',         # Your main production URL
+    'https://madtiger-frontend-r0b6sktx-amos-projects.vercel.app', # <-- ADD THIS LINE
 ]
 
-# This tells the browser which frontend domains are allowed to request data.
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://madtiger-frontend.vercel.app", # This must be your live Vercel URL
+    "https://madtiger-frontend.vercel.app",         # Your main production URL
+    "https://madtiger-frontend-r0b6sktxn-amos-projects-46c70523.vercel.app", # <-- ADD THIS LINE
 ]
-# --- END FIX ---
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
