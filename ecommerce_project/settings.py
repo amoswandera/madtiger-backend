@@ -14,14 +14,14 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'https://madtiger-backend.onrender.com',
-    'https://madtiger-frontend.vercel.app',         # Your main production URL
-    'https://madtiger-frontend-r0b6sktx-amos-projects.vercel.app', # <-- ADD THIS LINE
+    'https://madtiger-frontend.vercel.app',
+    'hhttps://madtiger-frontend-r0b6sktx-amos-projects-46c70523.vercel.app',
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://madtiger-frontend.vercel.app",         # Your main production URL
-    "https://madtiger-frontend-r0b6sktxn-amos-projects-46c70523.vercel.app", # <-- ADD THIS LINE
+    "https://madtiger-frontend.vercel.app",
+    "https://madtiger-frontend-r0b6sktx-amos-projects-46c70523.vercel.app",
 ]
 
 INSTALLED_APPS = [
