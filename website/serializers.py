@@ -1,31 +1,43 @@
-# website/serializers.py
-
-from rest_framework import serializers
-from .models import Product, Category
-from .models import Product, Category, Order, OrderItem
 from django.contrib.auth.models import User
-from .models import Collection
+from rest_framework import serializers
+from .models import Product, Category, Order, OrderItem, Collection
+
+# --- Cleaned and Corrected Serializers ---
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
 
+
+# --- THIS IS THE CRITICAL FIX FOR ALL PRODUCT IMAGES ---
 class ProductSerializer(serializers.ModelSerializer):
+    # We add a new, read-only field that will contain the clean URL string.
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
-        # These are the fields that will be converted to JSON
-        fields = ['id', 'name', 'price', 'description', 'image']
+        # We add 'image_url' to the list of fields the API will send to the frontend.
+        fields = ['id', 'name', 'price', 'description', 'image', 'image_url']
+        # The original 'image' field is now only used for uploading, not for displaying.
+        extra_kwargs = {'image': {'write_only': True}}
 
-        # New Serializer for the User model
+    def get_image_url(self, obj):
+        # This method safely checks if an image exists and returns its full URL.
+        if obj.image and hasattr(obj.image, 'url'):
+            return obj.image.url
+        # If no image exists, it sends null.
+        return None
+# --- END CRITICAL FIX ---
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password')
-        # This ensures the password is write-only (it won't be sent back in API responses)
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        # We use create_user to ensure the password gets hashed correctly
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -33,14 +45,15 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
-        # This serializer is for the individual items within an order
+
+# This serializer is for the individual items within an order (when creating an order)
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ("product", "quantity") # Removed 'price' - it should be taken from the Product model
+        fields = ("product", "quantity")
 
-        
-# This is the main serializer for creating an Order
+
+# This is the main serializer for CREATING an Order
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, write_only=True)
 
@@ -50,49 +63,67 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
-
-        # Create the main Order instance
         order = Order.objects.create(**validated_data)
-        
-        # Loop through the items data to create OrderItem instances
         for item_data in items_data:
-            # Get the product instance
             product = item_data['product']
-            # Create the OrderItem, taking the price from the actual product to prevent manipulation
             OrderItem.objects.create(
                 order=order, 
                 product=product,
-                price=product.price, # Set the price from the Product model
+                price=product.price,
                 quantity=item_data['quantity']
             )
-            
         return order
 
+
+# This serializer provides product details for VIEWING an order's history
+# It has also been updated to include the 'image_url'
 class OrderProductSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
-        fields = ("id", "name", "image")
+        fields = ("id", "name", "image_url") # Only send the clean URL
 
+    def get_image_url(self, obj):
+        if obj.image and hasattr(obj.image, 'url'):
+            return obj.image.url
+        return None
+
+
+# This serializer formats each item within the order history list
 class OrderHistoryItemSerializer(serializers.ModelSerializer):
-    product = OrderProductSerializer(read_only=True)
+    product = OrderProductSerializer(read_only=True) # Uses the serializer above
 
     class Meta:
         model = OrderItem
         fields = ("price", "quantity", "product")
 
+
+# This is the main serializer for DISPLAYING the list of past orders
 class OrderHistorySerializer(serializers.ModelSerializer):
     items = OrderHistoryItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
-        fields = ("id", "created", "address", "city", "postal_code", "items")
+        fields = ("id", "status", "created", "address", "city", "postal_code", "items")
 
+
+# This serializer lists collections on the homepage, now with a clean image_url
 class CollectionSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Collection
-        fields = ['id', 'name', 'slug', 'description', 'image']
+        fields = ['id', 'name', 'slug', 'description', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image and hasattr(obj.image, 'url'):
+            return obj.image.url
+        return None
+
 
 class CollectionDetailSerializer(serializers.ModelSerializer):
+    # Because this uses ProductSerializer, it will automatically get the new 'image_url'
     products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
