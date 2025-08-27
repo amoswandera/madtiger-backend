@@ -1,5 +1,3 @@
-# settings.py (Final, Definitive Version for Static Files)
-
 from pathlib import Path
 import os
 import dj_database_url
@@ -9,8 +7,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
-ALLOWED_HOSTS = ['madtiger-backend.onrender.com']
-CSRF_TRUSTED_ORIGINS = ['https://madtiger-backend.onrender.com']
+
+# --- THIS IS THE CRITICAL FIX FOR DEPLOYMENT ---
+# Explicitly list the only domains that can access this server.
+ALLOWED_HOSTS = [
+    'madtiger-backend.onrender.com',
+]
+
+# This tells Django which frontend domains can safely make requests that change data (e.g., POST).
+CSRF_TRUSTED_ORIGINS = [
+    'https://madtiger-backend.onrender.com',
+    'https://madtiger-frontend.vercel.app', # This must be your live Vercel URL
+]
+
+# This tells the browser which frontend domains are allowed to request data.
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://madtiger-frontend.vercel.app", # This must be your live Vercel URL
+]
+# --- END FIX ---
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -77,17 +93,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-WHITENOISE_USE_FINDERS = True
-
+WHITENOISE_USE_FINDERS = True 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://madtiger-frontend.vercel.app",
-]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
